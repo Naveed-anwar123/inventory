@@ -62,16 +62,16 @@
                     {% for t in transactions %}
                     <tr>
                         <td>{{t.item_name}}</td>
-                        <td>{{t.item_quantity}}*{{t.item_unit_price}}</td>
+                        <td>{{t.item_quantity |floatformat:"0" }}*{{t.item_unit_price |floatformat:"0"}}</td>
                         {% if t.lcost %}
-                        <td>{{t.lcost}}</td>
+                        <td>{{t.lcost | floatformat:"0"}}</td>
                         {% else %}
-                        <td>-</td>
+                        <td>0</td>
                         {% endif %}
                         {% if t.lcost %}
-                        <td>{{t.item_quantity|mul:t.item_unit_price|add:t.lcost}}</td>
+                        <td>{{t.item_quantity|mul:t.item_unit_price|add:t.lcost | floatformat:"0"}}</td>
                         {% else %}
-                        <td>{{t.item_quantity|mul:t.item_unit_price|add:0}}</td>
+                        <td>{{t.item_quantity|mul:t.item_unit_price|add:0 | floatformat:"0"}}</td>
                         {% endif %}
                     </tr>
                     {% endfor %}
@@ -79,16 +79,16 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>Total Amount: {{total}}
+                        <td>Total Amount: {{total | floatformat:"0" }}
                             <br>
-                            Discount: {{discount}}
+                            Discount: {{discount | floatformat:"0"}}
                             <br>
-                            Paid: {{paid}}
+                            Paid: {{paid | floatformat:"0"}}
                             <!-- <br>
                             udhar: {{udhar}} -->
                             <br>
                             <hr>
-                            Due Amount: {{damount}}
+                            Due Amount: {{damount | floatformat:"0"}}
                         </td>
                     </tr>
 

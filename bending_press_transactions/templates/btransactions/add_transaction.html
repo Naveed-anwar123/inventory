@@ -233,16 +233,16 @@
                     quantity.val(data.data[0].quantity)
                     total.val(data.data[0].price * data.data[0].quantity)
                     $.each($('.total'), function (key, value) {
-                        total_amount_to_set = parseFloat(total_amount_to_set) + parseFloat($(this).val());
+                        total_amount_to_set = parseInt(total_amount_to_set) + parseInt($(this).val());
                         $('.totalamount').val(total_amount_to_set)
-                        var paid = parseFloat($('.paid').val())
+                        var paid = parseInt($('.paid').val())
 
                         if (!isNaN(paid)) {
-                            var total = parseFloat($('.totalamount').val())
+                            var total = parseInt($('.totalamount').val())
                             var damount = total - paid
                             $('.damount').val(damount)
                         } else {
-                            $('.damount').val(parseFloat($('.totalamount').val()))
+                            $('.damount').val(parseInt($('.totalamount').val()))
                         }
                         $('.paid').val(0)
                         $('.discount').val(0)
@@ -266,7 +266,7 @@
             var total = $(totalNode).find('.total')
             var lcost = $(labourlNode).find('.lcost').val()
             console.log(lcost)
-            t = price * quantity
+            t = parseInt(price * quantity)
             if(lcost.length>0){
                 total.val(t + parseInt(lcost))
             }
@@ -274,11 +274,11 @@
                 total.val(t + parseInt(0))
             }
             $.each($('.total'), function (key, value) {
-                total_amount_to_set = parseFloat(total_amount_to_set) + parseFloat($(this).val());
+                total_amount_to_set = parseInt(total_amount_to_set) + parseInt($(this).val());
                 $('.totalamount').val(total_amount_to_set)
             });
             localStorage.setItem("totalamount", total_amount_to_set);
-            $('.damount').val(parseFloat(localStorage.getItem("totalamount")))
+            $('.damount').val(parseInt(localStorage.getItem("totalamount")))
         });
 
 
@@ -295,17 +295,16 @@
             var pr  = $(prNode).find('.quantity').val() 
             var qt = $(qtNode).find('.price').val()
 
-            total.val((parseFloat(qt) * parseFloat(pr))+parseFloat(lcost))
+            total.val((parseInt(qt) * parseInt(pr))+parseInt(lcost))
 
             $.each($('.total'), function (key, value) {
-                total_amount_to_set = parseFloat(total_amount_to_set) + parseFloat($(this).val());
+                total_amount_to_set = parseInt(total_amount_to_set) + parseInt($(this).val());
                 $('.totalamount').val(total_amount_to_set)
             });
             localStorage.setItem("totalamount", total_amount_to_set);
-            $('.damount').val(parseFloat(localStorage.getItem("totalamount")))
+            $('.damount').val(parseInt(localStorage.getItem("totalamount")))
         }
     });
-
 
 
         $(document).on('change', '.quantity', function () {
@@ -317,7 +316,7 @@
             var price = $(priceNode).find('.price').val()
             var total = $(totalNode).find('.total')
             var lcost = $(labourlNode).find('.lcost').val()
-            var t = price * quantity
+            var t = parseInt(price * quantity)
             if(lcost.length>0){
                 total.val(t + parseInt(lcost))
             }
@@ -326,12 +325,12 @@
             }
             
             $.each($('.total'), function (key, value) {
-                total_amount_to_set = parseFloat(total_amount_to_set) + parseFloat($(this).val());
+                total_amount_to_set = parseInt(total_amount_to_set) + parseInt($(this).val());
                 $('.totalamount').val(total_amount_to_set)
 
             });
             localStorage.setItem("totalamount", total_amount_to_set);
-            $('.damount').val(parseFloat(localStorage.getItem("totalamount")))
+            $('.damount').val(parseInt(localStorage.getItem("totalamount")))
 
         });
 
@@ -341,37 +340,37 @@
 
         $('.paid').on('change', function (key) {
 
-            var paid = parseFloat($(this).val())
+            var paid = parseInt($(this).val())
             console.log(paid)
             if (!isNaN(paid)) {
-                var total = parseFloat($(".totalamount").val());
+                var total = parseInt($(".totalamount").val());
                 var damount = total - paid
                 $('.damount').val(damount)
             } else {
-                $('.damount').val(parseFloat($(".totalamount").val()))
+                $('.damount').val(parseInt($(".totalamount").val()))
             }
 
         });
         $('.discount').on('change', function (key) {
 
-            var discount = parseFloat($(this).val())
+            var discount = parseInt($(this).val())
             if (discount > 0) {
-                var total = parseFloat(localStorage.getItem("totalamount"))
+                var total = parseInt(localStorage.getItem("totalamount"))
                 var actual_total = total - discount
                 $('.totalamount').val(actual_total)
             }
             else {
-                $('.totalamount').val(parseFloat(localStorage.getItem("totalamount")))
+                $('.totalamount').val(parseInt(localStorage.getItem("totalamount")))
             }
 
-            var paid = parseFloat($('.paid').val())
+            var paid = parseInt($('.paid').val())
 
             if (!isNaN(paid)) {
-                var total = parseFloat($('.totalamount').val())
+                var total = parseInt($('.totalamount').val())
                 var damount = total - paid
                 $('.damount').val(damount)
             } else {
-                $('.damount').val(parseFloat($('.totalamount').val()))
+                $('.damount').val(parseInt($('.totalamount').val()))
             }
 
 

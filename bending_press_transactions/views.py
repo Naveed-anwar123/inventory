@@ -53,7 +53,7 @@ def insert_transaction_to_db(request):
             irItems.item_unit_price = p
             irItems.item_total_price = t
             irItems.item_id = i        
-            irItems.lcost = l
+            irItems.lcost = math.ceil(float(l))
             irItems.receipt_id = irTransation
             irItems.added_at = datetime.now()
             irItems.save()
