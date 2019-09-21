@@ -1,0 +1,381 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .form-control[disabled],
+    .form-control[readonly],
+    fieldset[disabled] .form-control {
+        background-color: white !important;
+    }
+</style>
+<form method="POST" action="{% url 'insert_btransaction_to_db' %}" id="insert_transaction">
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Bending Press Transactions
+
+            </h1>
+            <ol class="breadcrumb">
+                <li class="active">Dashboard</li>
+                <li><a href="{% url 'add_btransaction' %}"><i class="fa fa-dashboard"></i> Bending Press</a>
+                </li>
+            </ol>
+        </section>
+        <section class="content">
+            {% csrf_token %}
+            <div id="another">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Select Item</label>
+                            <select name="name" class="form-control name">
+                                <option value="">Select an Item</option>
+                                {% for o in items %}
+                                <option value="{{o.id}}">{{o.item_name|upper}} &nbsp; | &nbsp; {{o.item_subtype}}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Item Unit price</label>
+                            <input type="text" class="form-control price" placeholder="Item unit price" name="price"
+                                min="1" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Item Quantity</label>
+                            <input type="text" class="form-control quantity" placeholder="Item Quantity"
+                                name="quantity" min="1" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Labour Cost</label>
+                            <input type="text" class="form-control lcost" placeholder="Labour Cost"
+                                name="lcost"  >
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Total price</label>
+                            <input type="text" class="form-control total" placeholder="Item Total price" min="1"
+                                disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary additemto">Add Item</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <input type="text" class="form-control cname" placeholder="Customer Name" name="cname" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Phone number (Optional)</label>
+                        <input type="text" class="form-control phone" placeholder="Phone number" name="phone" >
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Discount (Rupees)</label>
+                        <input type="text" class="form-control discount" placeholder="Discount" name="discount">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Total Amount (Rupees)</label>
+                        <input type="text" class="form-control totalamount" placeholder="Total Amount"
+                            name="totalamount" disabled>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Paid (Rupees)</label>
+                        <input type="text" class="form-control paid" placeholder="Paid" name="paid">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Due Amount (Rupees)</label>
+                        <input type="text" class="form-control damount" placeholder="Due Amount" name="damount"
+                            disabled>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea3">Additional Notes</label>
+                        <textarea class="form-control notes" name="notes" id="exampleFormControlTextarea3"
+                            rows="7"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="Add Transaction">
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+</form>
+
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+
+
+<script>
+    $(document).ready(function () {
+
+
+        $('#insert_transaction').submit(function (e) {
+            e.preventDefault()
+            $.LoadingOverlay("show");
+            var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+            form_action = $('#insert_transaction').attr('action');
+            var disabled = $(this).find(':input:disabled').removeAttr('disabled');
+            var serialized = $(this).serialize();
+            var item_names = []
+            var item_id = [];
+            var price_arr = [];
+            var quantity_arr = [];
+            var total_arr = [];
+            var lcost = [] ;
+            $.each($('.name'), function (key, value) {
+                item_id.push($(this).val())
+                item_names.push($('option:selected', this).text())
+            });
+            $.each($('.price'), function (key, value) {
+                price_arr.push($(this).val())
+            });
+            $.each($('.quantity'), function (key, value) {
+                quantity_arr.push($(this).val())
+            });
+            $.each($('.total'), function (key, value) {
+                total_arr.push($(this).val())
+            });
+
+            $.each($('.lcost'), function (key, value) {
+                lcost.push($(this).val())
+            });
+            console.log(item_id)
+            $.ajax({
+                url: form_action,
+                type: 'POST',
+                headers: {
+                    "X-CSRFToken": csrftoken,
+                },
+                data: {
+                    ids: JSON.stringify(item_id),
+                    inames: JSON.stringify(item_names),
+                    prices: JSON.stringify(price_arr),
+                    quantities: JSON.stringify(quantity_arr),
+                    totals: JSON.stringify(total_arr),
+                    lc: JSON.stringify(lcost),
+                    cname: $('.cname').val(),
+                    phone: $('.phone').val(),
+                    discount: $('.discount').val(),
+                    totalamount: $('.totalamount').val(),
+                    paid: $('.paid').val(),
+                    damount: $('.damount').val(),
+                    notes: $('.notes').val(),
+
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $.LoadingOverlay("hide");
+                    window.open('pdf/' + data.obj,'_blank')
+                    //$(location).attr('href', 'pdf/' + data.obj)
+                    console.log(data)
+                }
+            });
+            disabled.attr('disabled', 'disabled');
+        });
+
+        localStorage.removeItem('totalamount');
+
+        $('.additemto').click(function (e) {
+            e.preventDefault()
+            var $el = $('#another>div').clone()[$('#another>div').clone().length - 1];
+            $($el).each(function (index) {
+                $(this).find(':input').val('')
+            });
+            $('#another').append($el);
+        });
+
+        $(document).on('change', '.name', function () {
+            var priceNode = $(this).parent('div').parent('div').siblings()[0]
+            var quantityNode = $(this).parent('div').parent('div').siblings()[1]
+            var totalNode = $(this).parent('div').parent('div').siblings()[3]
+            var price = $(priceNode).find('.price')
+            var quantity = $(quantityNode).find('.quantity')
+            var total = $(totalNode).find('.total')
+            var total_amount_to_set = 0
+            $.ajax({
+                url: '/bending_press_items/get_single_item?id=' + $(this).val(),
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+
+                    price.val(data.data[0].price)
+                    quantity.val(data.data[0].quantity)
+                    total.val(data.data[0].price * data.data[0].quantity)
+                    $.each($('.total'), function (key, value) {
+                        total_amount_to_set = parseFloat(total_amount_to_set) + parseFloat($(this).val());
+                        $('.totalamount').val(total_amount_to_set)
+                        var paid = parseFloat($('.paid').val())
+
+                        if (!isNaN(paid)) {
+                            var total = parseFloat($('.totalamount').val())
+                            var damount = total - paid
+                            $('.damount').val(damount)
+                        } else {
+                            $('.damount').val(parseFloat($('.totalamount').val()))
+                        }
+                        $('.paid').val(0)
+                        $('.discount').val(0)
+                    });
+                    localStorage.setItem("totalamount", total_amount_to_set);
+                }
+            });
+
+
+
+        });
+
+
+        $(document).on('change', '.price', function () {
+            var total_amount_to_set = 0
+            var price = $(this).val()
+            var quantityNode = $(this).parent('div').parent('div').siblings()[1]
+            var totalNode = $(this).parent('div').parent('div').siblings()[3]
+            var labourlNode = $(this).parent('div').parent('div').siblings()[2]
+            var quantity = $(quantityNode).find('.quantity').val()
+            var total = $(totalNode).find('.total')
+            var lcost = $(labourlNode).find('.lcost').val()
+            console.log(lcost)
+            t = price * quantity
+            if(lcost.length>0){
+                total.val(t + parseInt(lcost))
+            }
+            else{
+                total.val(t + parseInt(0))
+            }
+            $.each($('.total'), function (key, value) {
+                total_amount_to_set = parseFloat(total_amount_to_set) + parseFloat($(this).val());
+                $('.totalamount').val(total_amount_to_set)
+            });
+            localStorage.setItem("totalamount", total_amount_to_set);
+            $('.damount').val(parseFloat(localStorage.getItem("totalamount")))
+        });
+
+
+
+        $(document).on('change', '.lcost', function () {
+            var total_amount_to_set = 0
+            var lcost = $(this).val()
+            if (lcost.length>0){
+            var totalNode = $(this).parent('div').parent('div').siblings()[3]
+            var total = $(totalNode).find('.total')
+            var prNode = $(this).parent('div').parent('div').siblings()[2]
+            var qtNode = $(this).parent('div').parent('div').siblings()[1]
+
+            var pr  = $(prNode).find('.quantity').val() 
+            var qt = $(qtNode).find('.price').val()
+
+            total.val((parseFloat(qt) * parseFloat(pr))+parseFloat(lcost))
+
+            $.each($('.total'), function (key, value) {
+                total_amount_to_set = parseFloat(total_amount_to_set) + parseFloat($(this).val());
+                $('.totalamount').val(total_amount_to_set)
+            });
+            localStorage.setItem("totalamount", total_amount_to_set);
+            $('.damount').val(parseFloat(localStorage.getItem("totalamount")))
+        }
+    });
+
+
+
+        $(document).on('change', '.quantity', function () {
+            var total_amount_to_set = 0
+            var quantity = $(this).val()
+            var priceNode = $(this).parent('div').parent('div').siblings()[1]
+            var totalNode = $(this).parent('div').parent('div').siblings()[3]
+            var labourlNode = $(this).parent('div').parent('div').siblings()[2]
+            var price = $(priceNode).find('.price').val()
+            var total = $(totalNode).find('.total')
+            var lcost = $(labourlNode).find('.lcost').val()
+            var t = price * quantity
+            if(lcost.length>0){
+                total.val(t + parseInt(lcost))
+            }
+            else{
+                total.val(t + parseInt(0))
+            }
+            
+            $.each($('.total'), function (key, value) {
+                total_amount_to_set = parseFloat(total_amount_to_set) + parseFloat($(this).val());
+                $('.totalamount').val(total_amount_to_set)
+
+            });
+            localStorage.setItem("totalamount", total_amount_to_set);
+            $('.damount').val(parseFloat(localStorage.getItem("totalamount")))
+
+        });
+
+         $('.discount,.totalamount,.paid,.damount,.lcost').on('keypress', function (key) {
+             if (key.charCode ==32 ) return false;
+         });
+
+        $('.paid').on('change', function (key) {
+
+            var paid = parseFloat($(this).val())
+            console.log(paid)
+            if (!isNaN(paid)) {
+                var total = parseFloat($(".totalamount").val());
+                var damount = total - paid
+                $('.damount').val(damount)
+            } else {
+                $('.damount').val(parseFloat($(".totalamount").val()))
+            }
+
+        });
+        $('.discount').on('change', function (key) {
+
+            var discount = parseFloat($(this).val())
+            if (discount > 0) {
+                var total = parseFloat(localStorage.getItem("totalamount"))
+                var actual_total = total - discount
+                $('.totalamount').val(actual_total)
+            }
+            else {
+                $('.totalamount').val(parseFloat(localStorage.getItem("totalamount")))
+            }
+
+            var paid = parseFloat($('.paid').val())
+
+            if (!isNaN(paid)) {
+                var total = parseFloat($('.totalamount').val())
+                var damount = total - paid
+                $('.damount').val(damount)
+            } else {
+                $('.damount').val(parseFloat($('.totalamount').val()))
+            }
+
+
+        });
+    });
+</script>
+{% endblock %}

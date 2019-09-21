@@ -1,0 +1,83 @@
+{% load static %}
+{% load custom_tag %}
+{% load mathfilters %}
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Sales Report</title>
+    <style type="text/css">
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .t {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 4px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h3 style="text-align:center">Transaction History Receipt</h3>
+            </div>
+            
+            <table class="table">
+                <thead>
+                        	
+                    <tr>
+                        <td>Receipt Id</td>
+                        <td>Customer Name</td>
+                        <td>Due amount</td>
+                        <td>Advance</td>
+                        <td>Paid</td>
+                        <td>Date</td>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in data %}
+                    <tr>
+                        <td>{{t.receipt_id}}</td>
+                        <td>{{cname}}</td>
+                        <td>{{t.damount|floatformat:"0"}}</td>
+                        <td>{{t.advance|floatformat:"0"}}</td>
+                        <td>{{t.paid|floatformat:"0"}}</td>
+                        <td>{{t.added_at}}</td>
+                        
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
